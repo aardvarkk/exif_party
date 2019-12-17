@@ -34,23 +34,6 @@ def move_files(
   end
 end
 
-# Fix dumb issue I created by making extra directories
-def fix_dirs(src_dir:, dry_run: true)
-  files_and_dirs = Dir[src_dir + "/**/"]
-  files_and_dirs.each do |f|
-    next unless File.directory?(f)
-    next unless f[-5..-2] == '.MP4'
-
-    contained = Dir[f + "*"]
-    contained.each do |to_move|
-      # FileUtils.mv(to_move, '..')
-    end
-
-    next if dry_run
-    FileUtils.rmdir(f)
-  end
-end
-
 # offset_seconds should be the offset between the location these files are being processed and where they were captured
 # We want the dates the files are organized in to represent the *local time when the images were taken*
 def adjust_dates(
@@ -87,16 +70,6 @@ def adjust_dates(
     `exiftool -overwrite_original -createdate="#{new_created_timestr}" #{f}`
   end
 end
-
-# fix_dirs(
-#   src_dir: '/Users/aardvarkk/Pictures'
-# )
-
-# adjust_dates(
-#   src_files: Dir['/Users/aardvarkk/Pictures/2015/2015-01-01/*.MP4'],
-#   target_time: Time.parse('2016-12-25T12:00-05'),
-#   offset_seconds: 3 * 3600
-# )
 
 # adjust_dates(
 #   src_files: Dir['/Users/aardvarkk/Pictures/2018/2018-12-31/*.{JPG,MP4}'],
